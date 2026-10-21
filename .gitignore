@@ -1,0 +1,9 @@
+# Python secrets
+be/.env
+be/client_secret.json
+be/youtube_token.json
+
+# Python cache
+be/__pycache__/
+*.pyc
+
