@@ -13,11 +13,14 @@ from youtube_uploader import (
     upload_video,
 )
 
+FRONTEND_URL = os.environ.get("FRONTEND_URL", "http://localhost:5173")
+BACKEND_URL = os.environ.get("BACKEND_URL", "http://localhost:8000")
+
 app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=[FRONTEND_URL],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -66,7 +69,7 @@ async def upload_and_process_video(file: UploadFile = File(...)):
             clip_duration=60,
         )
 
-        clip_urls = [f"http://localhost:8000/static/{filename}" for filename in clip_filenames]
+        clip_urls = [f"{BACKEND_URL}/static/{filename}" for filename in clip_filenames]
 
         return {
             "message": "Video split and processed successfully",
@@ -98,7 +101,7 @@ def youtube_callback(code: str):
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"OAuth failed: {str(e)}")
     # Close the tab and tell the React app auth is done
-    return RedirectResponse(url="http://localhost:5173/youtube?auth=success")
+    return RedirectResponse(url=f"{FRONTEND_URL}/youtube?auth=success")
 
 
 @app.get("/api/youtube/status")
